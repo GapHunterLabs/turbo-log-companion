@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+### Fixed
+
+Found via live interactive testing 2026-08-14, all 4 confirmed fixed
+in the same live sandbox afterward:
+
+- **Remove All Log Statements** threw `PsiInvalidElementAccessException`
+  and only removed the first of several inserted statements. Now
+  removes the statement and its leading whitespace as a single atomic
+  operation.
+- Inserting a log statement on a variable whose only appearance in the
+  file was its own declaration (e.g. right after `String status =
+  "PENDING";`) silently did nothing -- "Insert Log Statement" now works
+  on declarations too, not just later usages.
+- Inserting on the last statement in a block landed the new statement
+  outside the block's closing brace (invalid code).
+- Inserting on a variable inside a `return`/`throw` statement landed
+  the log call AFTER it -- unreachable code, a real compile error. Now
+  inserts before instead.
+
 ## [0.1.0]
 
 ### Added
