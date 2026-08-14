@@ -7,12 +7,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiWhiteSpace
 import dev.gaphunter.turbologcompanion.find.LogStatementFinder
+import dev.gaphunter.turbologcompanion.generate.LogStatementRemover
 
 /**
  * Removes every statement [InsertLogStatementAction] previously
@@ -55,16 +54,8 @@ class RemoveAllLogStatementsAction : AnAction() {
             }
 
             ApplicationManager.getApplication().invokeLater {
-                WriteCommandAction.runWriteCommandAction(project, "Remove All Log Statements", null, {
-                    // Delete from LAST to FIRST so earlier elements' text ranges/validity
-                    // aren't invalidated by removing a later one first.
-                    for (element in elements.sortedByDescending { it.textRange.startOffset }) {
-                        val precedingWhitespace = element.prevSibling as? PsiWhiteSpace
-                        element.delete()
-                        precedingWhitespace?.delete()
-                    }
-                })
-                notify(project, "Removed ${elements.size} log statement(s).", NotificationType.INFORMATION)
+                val removedCount = LogStatementRemover.removeAll(project, elements)
+                notify(project, "Removed $removedCount log statement(s).", NotificationType.INFORMATION)
             }
         }
     }

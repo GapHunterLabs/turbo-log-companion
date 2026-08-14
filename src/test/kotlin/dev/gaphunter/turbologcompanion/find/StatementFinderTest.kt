@@ -89,6 +89,85 @@ class StatementFinderTest : BasePlatformTestCase() {
         assertEquals("greet", target.context.methodName)
     }
 
+    fun testFindsAnchorOnTheDeclarationItselfWhenTheVariableIsNeverReadAfterwards() {
+        // Real gap found via live testing 2026-08-14: a variable whose
+        // ONLY appearance in the file is its own declaration (never
+        // read again) has no PsiReferenceExpression at all -- the
+        // "log right where I just declared it" workflow.
+        myFixture.configureByText(
+            "Acme4.java",
+            """
+            class Acme4 {
+                static void processOrder(String orderId, int quantity) {
+                    String sta<caret>tus = "PENDING";
+                    System.out.println("Processing " + orderId);
+                }
+            }
+            """.trimIndent(),
+        )
+        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
+
+        val target = StatementFinder.find(element)
+
+        assertNotNull(target)
+        assertEquals("status", target!!.context.variableName)
+        assertEquals("processOrder", target.context.methodName)
+        assertTrue(target.anchorStatement.text.contains("\"PENDING\""))
+    }
+
+    fun testFindsAnchorOnTheDeclarationItselfInKotlinWhenNeverReadAfterwards() {
+        myFixture.configureByText(
+            "Acme4.kt",
+            """
+            class Acme4 {
+                fun processOrder(orderId: String) {
+                    val sta<caret>tus = "PENDING"
+                    println("Processing " + orderId)
+                }
+            }
+            """.trimIndent(),
+        )
+        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
+
+        val target = StatementFinder.find(element)
+
+        assertNotNull(target)
+        assertEquals("status", target!!.context.variableName)
+        assertEquals("processOrder", target.context.methodName)
+    }
+
+    fun testReturnsNullForAFieldDeclarationNameItself() {
+        // A field has no enclosing block to insert a log statement into
+        // -- correctly stays unsupported directly on the declaration
+        // (still loggable from inside a method that references it, see
+        // testFindsAnchorForAFieldInAStaticJavaMethod above).
+        myFixture.configureByText(
+            "Acme5.java",
+            """
+            class Acme5 {
+                static int coun<caret>ter = 0;
+            }
+            """.trimIndent(),
+        )
+        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
+
+        assertNull(StatementFinder.find(element))
+    }
+
+    fun testReturnsNullForAClassLevelKotlinPropertyDeclarationName() {
+        myFixture.configureByText(
+            "Acme5.kt",
+            """
+            class Acme5 {
+                val coun<caret>ter = 0
+            }
+            """.trimIndent(),
+        )
+        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!
+
+        assertNull(StatementFinder.find(element))
+    }
+
     fun testReturnsNullWhenCaretIsNotOnAVariableReference() {
         myFixture.configureByText(
             "Acme3.java",

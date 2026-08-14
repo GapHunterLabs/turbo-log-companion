@@ -43,8 +43,21 @@ object StatementFinder {
         val javaRef = PsiTreeUtil.getParentOfType(elementAtCaret, PsiReferenceExpression::class.java, false)
         if (javaRef != null) findJava(javaRef)?.let { return it }
 
+        // Caret on the variable's DECLARATION itself (e.g. `String
+        // status = "PENDING";` when `status` is never read afterward) --
+        // not a PsiReferenceExpression, so the branch above never
+        // matches it. Found via live testing 2026-08-14: a variable
+        // whose only appearance in the file is its own declaration
+        // couldn't be logged at all, even though "log right where I just
+        // declared it" is the single most common real workflow.
+        val javaDecl = PsiTreeUtil.getParentOfType(elementAtCaret, PsiLocalVariable::class.java, false)
+        if (javaDecl != null) findJavaDeclaration(javaDecl)?.let { return it }
+
         val ktRef = PsiTreeUtil.getParentOfType(elementAtCaret, KtSimpleNameExpression::class.java, false)
         if (ktRef != null) findKotlin(ktRef)?.let { return it }
+
+        val ktDecl = PsiTreeUtil.getParentOfType(elementAtCaret, KtProperty::class.java, false)
+        if (ktDecl != null && ktDecl.isLocal) findKotlinDeclaration(ktDecl)?.let { return it }
 
         return null
     }
@@ -61,6 +74,17 @@ object StatementFinder {
         val line = document.getLineNumber(anchor.textRange.startOffset) + 1
 
         return InsertionTarget(anchor, LogContext(resolved.name ?: return null, className, methodName, line))
+    }
+
+    private fun findJavaDeclaration(local: PsiLocalVariable): InsertionTarget? {
+        val anchor = walkUpToBlockChild(local, isBlock = { it is PsiCodeBlock }) ?: return null
+        val document = documentFor(anchor) ?: return null
+
+        val className = PsiTreeUtil.getParentOfType(anchor, PsiClass::class.java)?.name ?: "TopLevel"
+        val methodName = PsiTreeUtil.getParentOfType(anchor, PsiMethod::class.java)?.name ?: "init"
+        val line = document.getLineNumber(anchor.textRange.startOffset) + 1
+
+        return InsertionTarget(anchor, LogContext(local.name ?: return null, className, methodName, line))
     }
 
     private fun findKotlin(reference: KtSimpleNameExpression): InsertionTarget? {
@@ -81,6 +105,17 @@ object StatementFinder {
         val line = document.getLineNumber(anchor.textRange.startOffset) + 1
 
         return InsertionTarget(anchor, LogContext(reference.getReferencedName(), className, methodName, line))
+    }
+
+    private fun findKotlinDeclaration(property: KtProperty): InsertionTarget? {
+        val anchor = walkUpToBlockChild(property, isBlock = { it is KtBlockExpression }) ?: return null
+        val document = documentFor(anchor) ?: return null
+
+        val className = PsiTreeUtil.getParentOfType(anchor, KtClassOrObject::class.java)?.name ?: "TopLevel"
+        val methodName = PsiTreeUtil.getParentOfType(anchor, KtNamedFunction::class.java)?.name ?: "init"
+        val line = document.getLineNumber(anchor.textRange.startOffset) + 1
+
+        return InsertionTarget(anchor, LogContext(property.name ?: return null, className, methodName, line))
     }
 
     private fun walkUpToBlockChild(start: PsiElement, isBlock: (PsiElement) -> Boolean): PsiElement? {
