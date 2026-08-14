@@ -1,0 +1,54 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>dev.gaphunter.turbologcompanion</id>
+    <name>Turbo Log Companion</name>
+    <vendor>Gap Hunter Labs</vendor>
+    <description><![CDATA[
+        <p>Place the caret on a variable, parameter, or field, run
+        "Insert Log Statement", and get a real <code>println</code>
+        (Kotlin) / <code>System.out.println</code> (Java) right after
+        the enclosing statement -- with the class, method, and line
+        number already baked in as literal text, so it works
+        identically whether the surrounding code is static, instance,
+        or top-level. Every inserted statement carries the same
+        <code>TCLC</code> marker, so "Remove All Log Statements" can
+        find and clean up every one it added, anywhere in the file, in
+        one action -- never leaves debug prints behind by accident.</p>
+        <p>Ports a pattern that's genuinely popular elsewhere (VS
+        Code's Turbo Console Log, ~2M installs) with no equivalent
+        anywhere in JetBrains Marketplace -- confirmed by search before
+        building, not assumed. Real Java AND Kotlin support, not just
+        one language.</p>
+        <p>100% local -- no network call, no account, no telemetry.
+        Every insertion is validated against an in-memory PSI copy
+        before anything touches disk: if it can't be inserted safely,
+        nothing is written, and you get an honest notification instead
+        of broken code.</p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <depends>org.jetbrains.kotlin</depends>
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK2="true"/>
+    </extensions>
+
+    <actions>
+        <group id="TurboLogCompanion.Actions" text="Turbo Log Companion" popup="true">
+            <action id="TurboLogCompanion.InsertLogStatement"
+                    class="dev.gaphunter.turbologcompanion.actions.InsertLogStatementAction"
+                    text="Insert Log Statement"
+                    description="Inserts a print statement for the variable under the caret, with class/method/line already baked in as literal text"/>
+            <action id="TurboLogCompanion.RemoveAllLogStatements"
+                    class="dev.gaphunter.turbologcompanion.actions.RemoveAllLogStatementsAction"
+                    text="Remove All Log Statements"
+                    description="Removes every log statement this plugin has inserted in the current file"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="Turbo Log Companion" displayType="BALLOON"/>
+    </extensions>
+</idea-plugin>
