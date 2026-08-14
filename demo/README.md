@@ -1,4 +1,4 @@
-# Cómo probar Turbo Log Companion en vivo
+# Demo — Turbo Log Companion
 
 1. Cuando abra el sandbox (`./gradlew runIde`), abrí este archivo:
    `demo/src/main/java/com/example/demo/OrderService.java`
