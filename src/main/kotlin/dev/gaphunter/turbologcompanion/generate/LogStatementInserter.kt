@@ -19,8 +19,8 @@ import org.jetbrains.kotlin.psi.KtThrowExpression
  * specifically so it's directly unit-testable (call it synchronously,
  * wrapped in [WriteCommandAction], no pooled-thread/`invokeLater`
  * indirection needed) -- the action itself still dispatches through a
- * background thread for the PSI read + validation (CONSTITUTION.md
- * section 6), but that threading is a production-performance concern,
+ * background thread for the PSI read + validation, but that threading
+ * is a production-performance concern,
  * not something a correctness test should have to race against.
  */
 object LogStatementInserter {

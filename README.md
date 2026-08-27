@@ -15,8 +15,8 @@ in JetBrains Marketplace** (confirmed by search before building this,
 not assumed: zero results for "turbo console log", "turbo log",
 "console log" as a code-generation concept). This is a deliberate
 "port a proven concept" bet, not a competitor-complaint-driven build —
-see `CONSTITUTION.md` §1 for the documented-exception discipline this
-follows (same treatment as Refactor Simulator/Bean Copy Companion).
+the same documented-exception discipline this follows (same treatment
+as Refactor Simulator/Bean Copy Companion).
 
 ## Why built this way
 

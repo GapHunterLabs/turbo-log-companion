@@ -11,9 +11,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
  * same [CommonDataKeys] the action itself reads -- this is the check
  * that would have caught Bean Copy Companion's real disabled-action
  * bug (a `DataKey` that compiled fine but was never populated by the
- * real Project View) WITHOUT needing a live `runIde` sandbox. See
- * `SDK_GOTCHAS.md` §17 for that incident -- this test class exists
- * specifically because of it.
+ * real Project View) WITHOUT needing a live `runIde` sandbox. This test
+ * class exists specifically because of that incident.
  *
  * The actual PSI insertion is tested directly and synchronously in
  * `LogStatementInserterTest` -- racing `actionPerformed()`'s real

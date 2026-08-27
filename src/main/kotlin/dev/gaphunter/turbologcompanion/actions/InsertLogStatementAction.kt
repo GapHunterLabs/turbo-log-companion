@@ -23,8 +23,7 @@ import dev.gaphunter.turbologcompanion.model.InsertionTarget
  * the EDT -> validate -> insert on the EDT (the actual PSI mutation is
  * [LogStatementInserter], kept separate so it's directly unit-testable
  * without racing this class's background-thread dispatch). Same
- * threading discipline as every other Gap Hunter Labs plugin
- * (CONSTITUTION.md section 6).
+ * threading discipline as every other Gap Hunter Labs plugin.
  */
 class InsertLogStatementAction : AnAction() {
 
