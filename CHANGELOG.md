@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [0.1.1]
+
+### Added
+
+- Review/star CTA: after 5 successful log-statement insertions (never
+  counted for the validation-failed branch, and never for "Remove All
+  Log Statements", which is cleanup, not the plugin's value
+  proposition), a one-time notification asks whether to rate the
+  plugin on Marketplace, with a permanent "Don't ask again" option.
+
 ### Fixed
 
 Found via live interactive testing 2026-08-14, all 4 confirmed fixed
@@ -38,5 +48,6 @@ in the same live sandbox afterward:
 - In-memory PSI validation before every insertion -- never writes a
   statement that wouldn't parse.
 
-[Unreleased]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/GapHunterLabs/turbo-log-companion/commits/0.1.0

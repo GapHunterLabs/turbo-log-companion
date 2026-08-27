@@ -15,6 +15,7 @@ import dev.gaphunter.turbologcompanion.generate.InMemoryValidator
 import dev.gaphunter.turbologcompanion.generate.LogStatementInserter
 import dev.gaphunter.turbologcompanion.generate.LogStatementWriter
 import dev.gaphunter.turbologcompanion.model.InsertionTarget
+import dev.gaphunter.turbologcompanion.review.ReviewPrompt
 
 /**
  * Editor context-menu entry point. Caret must be on a variable,
@@ -60,6 +61,8 @@ class InsertLogStatementAction : AnAction() {
 
                 ApplicationManager.getApplication().invokeLater {
                     LogStatementInserter.insert(project, target, statementText, isJava)
+                    // Real successful insertion only -- never the validation-failed branch above.
+                    ReviewPrompt.recordHit(project)
                     notify(project, "Log statement inserted for '${target.context.variableName}'.", NotificationType.INFORMATION)
                 }
             }
