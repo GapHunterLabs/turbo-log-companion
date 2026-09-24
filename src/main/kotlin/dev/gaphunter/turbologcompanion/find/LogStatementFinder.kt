@@ -1,5 +1,6 @@
 package dev.gaphunter.turbologcompanion.find
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiCodeBlock
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -27,6 +28,7 @@ object LogStatementFinder {
         val found = mutableListOf<PsiElement>()
         file.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 val parent = element.parent
                 val isBlockChild = parent is PsiCodeBlock || parent is KtBlockExpression
                 if (isBlockChild && element.text.contains(MARKER_TEXT)) {

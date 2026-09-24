@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [0.1.2]
+
+### Fixed
+
+- Review/star CTA now links to this plugin's own Marketplace reviews
+  page instead of the vendor's generic plugin list.
+- `LogStatementFinder`'s whole-file PSI walk (used by "Remove All Log
+  Statements") now calls `ProgressManager.checkCanceled()` per
+  element, matching the rest of the catalog's convention for any
+  unbounded recursive traversal.
+
 ## [0.1.1]
 
 ### Added
@@ -48,6 +59,7 @@ in the same live sandbox afterward:
 - In-memory PSI validation before every insertion -- never writes a
   statement that wouldn't parse.
 
-[Unreleased]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/GapHunterLabs/turbo-log-companion/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/GapHunterLabs/turbo-log-companion/commits/0.1.0
