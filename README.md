@@ -52,10 +52,12 @@ Place the caret on a variable/parameter/field reference → right-click
 click anywhere in the file → **Turbo Log Companion → Remove All Log
 Statements**.
 
-## Enterprise / Team Licensing
+## Support
 
-Need enterprise features, custom rules, or team licensing? Contact us
-at **gaphunterlabs@gmail.com**.
+- **Bugs and feature requests:** [GitHub Issues](https://github.com/GapHunterLabs/turbo-log-companion/issues)
+- **Questions, or custom rules for a team's codebase:** **gaphunterlabs@gmail.com**
+- **Security vulnerabilities:** report privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
+- **Privacy and network behavior:** [PRIVACY.md](PRIVACY.md)
 
 ## Development
 
